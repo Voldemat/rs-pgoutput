@@ -1,0 +1,33 @@
+name: "main"
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        BUILD_TARGET: [release]
+    outputs:
+      release_built: ${{ steps.set-output.outputs.release_built }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - uses: actions/checkout@v5
+    - name: Build binaries in "${{ matrix.BUILD_TARGET }}" mode
+      run: cargo build --profile ${{ matrix.BUILD_TARGET }}
+    - name: Run tests in "${{ matrix.BUILD_TARGET }}" mode
+      run: cargo test --profile ${{ matrix.BUILD_TARGET }}
+    - uses: rust-lang/crates-io-auth-action@v1
+      id: auth
+      if: github.ref_type == 'tag'
+    - name: Publish crate
+      if: github.ref_type == 'tag'
+      env:
+        CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+      run: |
+        sed -i 's/0.0.1/${{ github.ref_name }}/g' Cargo.toml
+        sed -i 's/0.0.1/${{ github.ref_name }}/g' Cargo.lock
+        cargo publish --allow-dirty
