@@ -1,4 +1,4 @@
-pub trait StreamingValueTrait {
+pub trait StreamingValueTrait: std::fmt::Debug {
     const ENABLED: bool;
 
     fn to_str() -> &'static str;
@@ -13,6 +13,12 @@ impl StreamingValueTrait for StreamingValueTraitOn {
     }
 }
 
+impl std::fmt::Debug for StreamingValueTraitOn {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("StreamingValueTraitOn")
+    }
+}
+
 pub struct StreamingValueTraitParallel {}
 impl StreamingValueTrait for StreamingValueTraitParallel {
     const ENABLED: bool = true;
@@ -22,12 +28,24 @@ impl StreamingValueTrait for StreamingValueTraitParallel {
     }
 }
 
+impl std::fmt::Debug for StreamingValueTraitParallel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("StreamingValueTraitParallel")
+    }
+}
+
 pub struct StreamingValueTraitOff {}
 impl StreamingValueTrait for StreamingValueTraitOff {
     const ENABLED: bool = false;
 
     fn to_str() -> &'static str {
         "off"
+    }
+}
+
+impl std::fmt::Debug for StreamingValueTraitOff {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("StreamingValueTraitOff")
     }
 }
 
