@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct StreamPrepare {
     pub flags: i8,
     pub lsn: i64,

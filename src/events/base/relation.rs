@@ -1,7 +1,8 @@
 pub trait RelationTrait {
-    type Type: crate::utils::DynamicSizeEvent;
+    type Type: crate::utils::DynamicSizeEvent + std::fmt::Debug;
 }
 
+#[derive(Debug)]
 pub struct RelationWithStreamingEnabled {
     pub transaction_id: i32,
     pub oid: i32,
@@ -54,6 +55,7 @@ impl crate::utils::DynamicSizeEvent for RelationWithStreamingEnabled {
     }
 }
 
+#[derive(Debug)]
 pub struct RelationWithoutStreamingEnabled {
     pub oid: i32,
     pub relation_namespace: String,

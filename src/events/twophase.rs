@@ -1,3 +1,4 @@
+#[derive(Debug)]
 #[repr(u8)]
 pub enum TwoPhaseCommitEventType {
     BeginPrepare = b'b',
@@ -22,6 +23,7 @@ impl TwoPhaseCommitEventType {
     }
 }
 
+#[derive(Debug)]
 pub struct BeginPrepare {
     pub lsn: i64,
     pub end_lsn: i64,
@@ -48,6 +50,7 @@ impl crate::utils::DynamicSizeEvent for BeginPrepare {
     }
 }
 
+#[derive(Debug)]
 pub struct Prepare {
     pub flags: i8,
     pub lsn: i64,
@@ -57,6 +60,7 @@ pub struct Prepare {
     pub gid: String,
 }
 
+#[derive(Debug)]
 pub struct CommitPrepared {
     pub flags: i8,
     pub lsn: i64,
@@ -66,6 +70,7 @@ pub struct CommitPrepared {
     pub gid: String,
 }
 
+#[derive(Debug)]
 pub struct RollbackPrepared {
     pub flags: i8,
     pub lsn: i64,
@@ -158,6 +163,7 @@ impl crate::utils::DynamicSizeEvent for RollbackPrepared {
     }
 }
 
+#[derive(Debug)]
 pub enum TwoPhaseCommitEvent {
     BeginPrepare(BeginPrepare),
     Prepare(Prepare),

@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Commit {
     pub flags: i8,
     pub lsn: i64,

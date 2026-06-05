@@ -1,8 +1,5 @@
-pub struct PGNull;
-pub struct PGUnchangedToastedValue;
-
 pub trait PGValue: crate::options::BinaryValueTrait {
-    type Type;
+    type Type: std::fmt::Debug;
     fn parse(c: u8, value_buffer: &[u8]) -> (Self::Type, usize);
 }
 
@@ -26,25 +23,24 @@ impl PGValue for crate::options::BinaryValueTraitOff {
     }
 }
 
-pub enum TupleDataColumn<T: PGValue> {
-    PGNull(PGNull),
-    PGUnchangedToastedValue(PGUnchangedToastedValue),
+#[derive(Debug)]
+pub enum TupleDataColumn<T: PGValue + std::fmt::Debug> {
+    PGNull,
+    PGUnchangedToastedValue,
     Value(T::Type),
 }
 
 pub type TupleData<Binary> = Vec<TupleDataColumn<Binary>>;
 
-pub fn parse_tuple_column<Binary: PGValue>(
+pub fn parse_tuple_column<Binary: PGValue + std::fmt::Debug>(
     buffer: &[u8],
 ) -> (TupleDataColumn<Binary>, usize) {
     let c = buffer.first().unwrap();
     match c {
-        b'n' => return (TupleDataColumn::PGNull(PGNull {}), 1),
+        b'n' => return (TupleDataColumn::PGNull, 1),
         b'u' => {
             return (
-                TupleDataColumn::PGUnchangedToastedValue(
-                    PGUnchangedToastedValue {},
-                ),
+                TupleDataColumn::PGUnchangedToastedValue,
                 1,
             );
         }
@@ -56,7 +52,7 @@ pub fn parse_tuple_column<Binary: PGValue>(
     (TupleDataColumn::Value(value), read_bytes)
 }
 
-pub fn parse_tuple_data<Binary: PGValue>(
+pub fn parse_tuple_data<Binary: PGValue + std::fmt::Debug>(
     buffer: &[u8],
 ) -> (TupleData<Binary>, usize) {
     let mut data = TupleData::<Binary>::new();
@@ -74,12 +70,13 @@ pub fn parse_tuple_data<Binary: PGValue>(
 pub type OldTupleData<Binary> = TupleData<Binary>;
 pub type PrimaryKeyTupleData<Binary> = TupleData<Binary>;
 
-pub enum OldDataOrPrimaryKeyTupleData<Binary: PGValue> {
+#[derive(Debug)]
+pub enum OldDataOrPrimaryKeyTupleData<Binary: PGValue + std::fmt::Debug> {
     OldTupleData(OldTupleData<Binary>),
     PrimaryKeyTupleData(PrimaryKeyTupleData<Binary>),
 }
 
-pub fn parse_old_data_or_primary_key<Binary: PGValue>(
+pub fn parse_old_data_or_primary_key<Binary: PGValue + std::fmt::Debug>(
     buffer: &[u8],
 ) -> Option<(OldDataOrPrimaryKeyTupleData<Binary>, usize)> {
     if buffer.len() == 0 {

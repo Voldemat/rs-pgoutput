@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Origin {
     pub commit_lsn: i64,
     pub origin: String,

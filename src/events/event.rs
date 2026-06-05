@@ -1,5 +1,8 @@
+#[derive(Debug)]
 pub enum Event<
-    Binary: crate::options::BinaryValueTrait + super::base::tuple_data::PGValue,
+    Binary: crate::options::BinaryValueTrait
+        + super::base::tuple_data::PGValue
+        + std::fmt::Debug,
     Streaming: crate::options::StreamingValueTrait
         + super::message::MessageTrait
         + super::base::relation::RelationTrait
@@ -24,7 +27,9 @@ pub enum Event<
 }
 
 impl<
-    Binary: crate::options::BinaryValueTrait + super::base::tuple_data::PGValue,
+    Binary: crate::options::BinaryValueTrait
+        + super::base::tuple_data::PGValue
+        + std::fmt::Debug,
     Streaming: crate::options::StreamingValueTrait
         + super::message::MessageTrait
         + super::base::relation::RelationTrait

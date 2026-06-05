@@ -1,8 +1,9 @@
 pub const TYPE_DESCRIMINATOR: u8 = b'M';
 pub trait MessageTrait {
-    type Type: crate::utils::DynamicSizeEvent;
+    type Type: crate::utils::DynamicSizeEvent + std::fmt::Debug;
 }
 
+#[derive(Debug)]
 pub struct MessageWithStreamingEnabled {
     pub transaction_id: i32,
     pub flags: i8,
@@ -42,6 +43,7 @@ impl crate::utils::DynamicSizeEvent for MessageWithStreamingEnabled {
     }
 }
 
+#[derive(Debug)]
 pub struct MessageWithoutStreamingEnabled {
     pub flags: i8,
     pub lsn: i64,

@@ -1,7 +1,8 @@
 pub trait TypeTrait: crate::options::StreamingValueTrait {
-    type Type: crate::utils::DynamicSizeEvent;
+    type Type: crate::utils::DynamicSizeEvent + std::fmt::Debug;
 }
 
+#[derive(Debug)]
 pub struct TypeWithStreamingEnabled {
     pub transaction_id: i32,
     pub oid: i32,
@@ -45,6 +46,7 @@ impl TypeTrait for crate::options::StreamingValueTraitParallel {
     type Type = TypeWithStreamingEnabled;
 }
 
+#[derive(Debug)]
 pub struct TypeWithoutStreamingEnabled {
     pub oid: i32,
     pub type_namespace: String,

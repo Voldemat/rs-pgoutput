@@ -1,7 +1,8 @@
 pub trait DeleteTrait<Binary> {
-    type Type: crate::utils::DynamicSizeEvent;
+    type Type: crate::utils::DynamicSizeEvent + std::fmt::Debug;
 }
 
+#[derive(Debug)]
 pub struct DeleteWithStreamingEnabled<Binary: super::tuple_data::PGValue> {
     pub transaction_id: i32,
     pub oid: i32,
@@ -29,6 +30,7 @@ impl<Binary: super::tuple_data::PGValue> crate::utils::DynamicSizeEvent
     }
 }
 
+#[derive(Debug)]
 pub struct DeleteWithoutStreamingEnabled<Binary: super::tuple_data::PGValue> {
     pub oid: i32,
     pub old_data_or_primary_key:

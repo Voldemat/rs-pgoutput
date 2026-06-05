@@ -31,7 +31,7 @@ impl StreamingValueTrait for StreamingValueTraitOff {
     }
 }
 
-pub trait BinaryValueTrait {
+pub trait BinaryValueTrait: std::fmt::Debug {
     const BINARY: bool;
 
     fn to_str() -> &'static str;
@@ -48,11 +48,23 @@ impl BinaryValueTrait for BinaryValueTraitOn {
     }
 }
 
+impl std::fmt::Debug for BinaryValueTraitOn {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("BinaryValueTraitOn")
+    }
+}
+
 impl BinaryValueTrait for BinaryValueTraitOff {
     const BINARY: bool = false;
 
     fn to_str() -> &'static str {
         return "false";
+    }
+}
+
+impl std::fmt::Debug for BinaryValueTraitOff {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("BinaryValueTraitOff")
     }
 }
 

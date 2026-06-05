@@ -1,10 +1,13 @@
 pub trait UpdateTrait<Binary: super::tuple_data::PGValue>:
     crate::options::StreamingValueTrait
 {
-    type Type: crate::utils::DynamicSizeEvent;
+    type Type: crate::utils::DynamicSizeEvent + std::fmt::Debug;
 }
 
-pub struct UpdateWithStreamingEnabled<Binary: super::tuple_data::PGValue> {
+#[derive(Debug)]
+pub struct UpdateWithStreamingEnabled<
+    Binary: super::tuple_data::PGValue + std::fmt::Debug,
+> {
     pub transaction_id: i32,
     pub oid: i32,
     pub old_data_or_primary_key:
@@ -12,8 +15,8 @@ pub struct UpdateWithStreamingEnabled<Binary: super::tuple_data::PGValue> {
     pub data: super::tuple_data::TupleData<Binary>,
 }
 
-impl<Binary: super::tuple_data::PGValue> crate::utils::DynamicSizeEvent
-    for UpdateWithStreamingEnabled<Binary>
+impl<Binary: super::tuple_data::PGValue + std::fmt::Debug>
+    crate::utils::DynamicSizeEvent for UpdateWithStreamingEnabled<Binary>
 {
     const MIN_BUFFER_SIZE: usize =
         std::mem::size_of::<i32>() * 2 + std::mem::size_of::<i16>();
@@ -39,15 +42,18 @@ impl<Binary: super::tuple_data::PGValue> crate::utils::DynamicSizeEvent
     }
 }
 
-pub struct UpdateWithoutStreamingEnabled<Binary: super::tuple_data::PGValue> {
+#[derive(Debug)]
+pub struct UpdateWithoutStreamingEnabled<
+    Binary: super::tuple_data::PGValue + std::fmt::Debug,
+> {
     pub oid: i32,
     pub old_data_or_primary_key:
         Option<super::tuple_data::OldDataOrPrimaryKeyTupleData<Binary>>,
     pub data: super::tuple_data::TupleData<Binary>,
 }
 
-impl<Binary: super::tuple_data::PGValue> crate::utils::DynamicSizeEvent
-    for UpdateWithoutStreamingEnabled<Binary>
+impl<Binary: super::tuple_data::PGValue + std::fmt::Debug>
+    crate::utils::DynamicSizeEvent for UpdateWithoutStreamingEnabled<Binary>
 {
     const MIN_BUFFER_SIZE: usize =
         std::mem::size_of::<i32>() + std::mem::size_of::<i16>();
@@ -70,19 +76,19 @@ impl<Binary: super::tuple_data::PGValue> crate::utils::DynamicSizeEvent
     }
 }
 
-impl<Binary: super::tuple_data::PGValue> UpdateTrait<Binary>
+impl<Binary: super::tuple_data::PGValue + std::fmt::Debug> UpdateTrait<Binary>
     for crate::options::StreamingValueTraitOn
 {
     type Type = UpdateWithStreamingEnabled<Binary>;
 }
 
-impl<Binary: super::tuple_data::PGValue> UpdateTrait<Binary>
+impl<Binary: super::tuple_data::PGValue + std::fmt::Debug> UpdateTrait<Binary>
     for crate::options::StreamingValueTraitParallel
 {
     type Type = UpdateWithStreamingEnabled<Binary>;
 }
 
-impl<Binary: super::tuple_data::PGValue> UpdateTrait<Binary>
+impl<Binary: super::tuple_data::PGValue + std::fmt::Debug> UpdateTrait<Binary>
     for crate::options::StreamingValueTraitOff
 {
     type Type = UpdateWithoutStreamingEnabled<Binary>;

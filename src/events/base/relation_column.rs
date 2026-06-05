@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct RelationColumn {
     pub flags: i8,
     pub name: String,

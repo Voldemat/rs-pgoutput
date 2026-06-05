@@ -1,3 +1,4 @@
+#[derive(Debug)]
 #[repr(u8)]
 pub enum StreamEventType {
     StreamStart = b'S',
@@ -18,6 +19,7 @@ impl StreamEventType {
     }
 }
 
+#[derive(Debug)]
 pub struct StreamStart {
     pub transaction_id: i32,
     pub flags: i8,
@@ -36,8 +38,7 @@ impl crate::utils::StaticSizeEvent for StreamStart {
     }
 }
 
-pub struct StreamStop;
-
+#[derive(Debug)]
 pub struct StreamCommit {
     pub transaction_id: i32,
     pub flags: i8,
@@ -62,9 +63,10 @@ impl crate::utils::StaticSizeEvent for StreamCommit {
 }
 
 pub trait StreamAbortTrait {
-    type Type: crate::utils::StaticSizeEvent;
+    type Type: crate::utils::StaticSizeEvent + std::fmt::Debug;
 }
 
+#[derive(Debug)]
 pub struct StreamAbortWithoutParallel {
     pub transaction_id: i32,
     pub sub_transaction_id: i32,
@@ -84,6 +86,7 @@ impl crate::utils::StaticSizeEvent for StreamAbortWithoutParallel {
     }
 }
 
+#[derive(Debug)]
 pub struct StreamAbortWithParallel {
     pub transaction_id: i32,
     pub sub_transaction_id: i32,
@@ -120,9 +123,10 @@ impl StreamAbortTrait for crate::options::StreamingValueTraitOff {
     type Type = StreamAbortWithoutParallel;
 }
 
+#[derive(Debug)]
 pub enum StreamEvent<Streaming: StreamAbortTrait> {
     Start(StreamStart),
-    Stop(StreamStop),
+    Stop,
     Commit(StreamCommit),
     Abort(Streaming::Type),
 }
@@ -136,7 +140,7 @@ pub fn parse_streaming_event<Streaming: StreamAbortTrait>(
             crate::utils::parse_static_size_event::<StreamStart>(buffer)
                 .map(|value| StreamEvent::Start(value))
         }
-        StreamEventType::StreamStop => Ok(StreamEvent::Stop(StreamStop)),
+        StreamEventType::StreamStop => Ok(StreamEvent::Stop),
         StreamEventType::StreamCommit => {
             crate::utils::parse_static_size_event::<StreamCommit>(buffer)
                 .map(|value| StreamEvent::Commit(value))

@@ -1,7 +1,8 @@
 pub trait TruncateTrait: crate::options::StreamingValueTrait {
-    type Type: crate::utils::DynamicSizeEvent;
+    type Type: crate::utils::DynamicSizeEvent + std::fmt::Debug;
 }
 
+#[derive(Debug)]
 pub struct TruncateWithStreamingEnabled {
     pub transaction_id: i32,
     pub flags: i8,
@@ -30,6 +31,7 @@ impl crate::utils::DynamicSizeEvent for TruncateWithStreamingEnabled {
     }
 }
 
+#[derive(Debug)]
 pub struct TruncateWithoutStreamingEnabled {
     pub flags: i8,
     pub oids: Vec<i32>,

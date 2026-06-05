@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Begin {
     pub final_transaction_lsn: i64,
     pub commit_timestamp: i64,

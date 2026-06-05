@@ -34,6 +34,7 @@ impl BaseEventType {
     }
 }
 
+#[derive(Debug)]
 pub enum BaseEvent<
     Binary: super::tuple_data::PGValue,
     Streaming: crate::options::StreamingValueTrait
