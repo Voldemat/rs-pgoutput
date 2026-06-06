@@ -5,3 +5,6 @@ edition = "2024"
 license = "MIT"
 description = "Library for parsing pgoutput events"
 repository = "https://github.com/Voldemat/rs-pgoutput"
+
+[dev-dependencies]
+base64 = "0.22.1"

@@ -1,25 +1,22 @@
 pub trait PGValue: crate::options::BinaryValueTrait {
     type Type: std::fmt::Debug;
-    fn parse(c: u8, value_buffer: &[u8]) -> (Self::Type, usize);
+    fn parse(c: u8, value_buffer: &[u8]) -> Self::Type;
 }
 
 impl PGValue for crate::options::BinaryValueTraitOn {
     type Type = Vec<u8>;
-    fn parse(c: u8, value_buffer: &[u8]) -> (Self::Type, usize) {
+    fn parse(c: u8, value_buffer: &[u8]) -> Self::Type {
         assert!(c == b'b');
-        (value_buffer.to_vec(), 5 + value_buffer.len())
+        value_buffer.to_vec()
     }
 }
 
 impl PGValue for crate::options::BinaryValueTraitOff {
     type Type = String;
 
-    fn parse(c: u8, value_buffer: &[u8]) -> (Self::Type, usize) {
+    fn parse(c: u8, value_buffer: &[u8]) -> Self::Type {
         assert!(c == b't');
-        (
-            String::from_utf8_lossy(value_buffer).to_string(),
-            5 + value_buffer.len(),
-        )
+        String::from_utf8_lossy(value_buffer).to_string()
     }
 }
 
@@ -46,10 +43,10 @@ pub fn parse_tuple_column<Binary: PGValue + std::fmt::Debug>(
         }
         _ => {}
     };
-    let value_size = i64::from_be_bytes(buffer[1..4].try_into().unwrap());
-    let value_buffer = &buffer[5..value_size as usize];
-    let (value, read_bytes) = Binary::parse(*c, value_buffer);
-    (TupleDataColumn::Value(value), read_bytes)
+    let value_size = i32::from_be_bytes(buffer[1..5].try_into().unwrap());
+    let value_buffer = &buffer[5..value_size as usize + 5];
+    let value = Binary::parse(*c, value_buffer);
+    (TupleDataColumn::Value(value), value_buffer.len() + 5)
 }
 
 pub fn parse_tuple_data<Binary: PGValue + std::fmt::Debug>(
@@ -60,7 +57,7 @@ pub fn parse_tuple_data<Binary: PGValue + std::fmt::Debug>(
     let mut buffer_position = 2;
     for _ in 0..column_size {
         let (column, read_bytes) =
-            parse_tuple_column::<Binary>(&buffer[0..buffer_position]);
+            parse_tuple_column::<Binary>(&buffer[buffer_position..]);
         data.push(column);
         buffer_position += read_bytes;
     }

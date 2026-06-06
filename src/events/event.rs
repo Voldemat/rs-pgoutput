@@ -128,3 +128,31 @@ impl EventType {
             })
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_parse() {
+        let base64_buffers = [
+            "UgAAQTlwdWJsaWMAZmlsZXMAZgALAWlkAAAAC4b/////AWNyZWF0ZWRfYXQAAAAEWv////8BdXBkYXRlZF9hdAAAAARa/////wFwYXRoAAAABBP/////AXR5cGUAAAAEE/////8BbmFtZQAAAAQTAAAB+AFzaXplAAAAABf/////AWNoZWNrc3VtAAAABBMAAAAkAXVzZXJfaWQAAAALhv////8BaXNfcHJvY2Vzc2VkAAAAABD/////AXBhcmVudF9pZAAAAAuG/////w==",
+            "SQAAQTlOAAt0AAAAJDQ4OWY4NGQ1LWQzMDQtNGE4My04ZWE0LWM4NjQxMmM5Zjk0ZnQAAAAaMjAyNi0wNi0wNiAxMjoyOToxMi43MTQ5NzR0AAAAGjIwMjYtMDYtMDYgMTI6Mjk6MTIuNzE0OTc0dAAAAJRodHRwczovL3MzLnYtdHJlbmR5LnJ1L3F1aWNrY2xpY2svMmNiOTFkMWEtNGNlMy00NzVhLWExY2YtNjc5Y2ZkOTdlNzUzX2U5YTYyZTVlLWVhYmMtNDUxNS1iODk0LTlmZTVkN2YyYjBhYV83ZDVmMDliZS0zZmY0LTQ5ODgtYTFkYy00YzcxODM2NDE3ODQuanBndAAAAAppbWFnZS9qcGVndAAAAHIyY2I5MWQxYS00Y2UzLTQ3NWEtYTFjZi02NzljZmQ5N2U3NTNfZTlhNjJlNWUtZWFiYy00NTE1LWI4OTQtOWZlNWQ3ZjJiMGFhXzdkNWYwOWJlLTNmZjQtNDk4OC1hMWRjLTRjNzE4MzY0MTc4NC5qcGd0AAAABTk0NTI2dAAAACA5NTc5YmExZmI5YWZmZmE3ZTZhYzEyNDk4MzU0MTBkZm50AAAAAWZu"
+        ];
+        for base64_buffer in base64_buffers {
+            let buffer = base64::Engine::decode(
+                &base64::engine::general_purpose::STANDARD,
+                base64_buffer,
+            )
+            .unwrap();
+
+            let event_type = EventType::from_char(buffer[0]).unwrap();
+
+            println!("{:?}", Event::<
+                crate::options::BinaryValueTraitOff,
+                crate::options::StreamingValueTraitOff,
+            >::parse(&event_type, &buffer[1..])
+            .unwrap());
+        }
+    }
+}

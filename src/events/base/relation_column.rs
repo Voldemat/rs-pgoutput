@@ -11,7 +11,7 @@ impl RelationColumn {
         std::mem::size_of::<i8>() + 1 + std::mem::size_of::<i32>() * 2;
 
     fn get_buffer_size(self: &Self) -> usize {
-        Self::MIN_BUFFER_SIZE + self.name.len() + 1
+        Self::MIN_BUFFER_SIZE + self.name.len() as usize
     }
 
     fn from_buffer(buffer: &[u8]) -> RelationColumn {

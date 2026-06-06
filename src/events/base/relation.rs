@@ -98,7 +98,7 @@ impl crate::utils::DynamicSizeEvent for RelationWithoutStreamingEnabled {
             replica_identity,
             columns: super::relation_column::parse_relation_columns(
                 column_count,
-                &buffer[after_name_index + 2..],
+                &buffer[after_name_index + 3..],
             ),
         }
     }
