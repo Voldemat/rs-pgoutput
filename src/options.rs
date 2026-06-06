@@ -142,7 +142,7 @@ pub fn build_pgoutput_static_options_string_parts<
     Origin: OriginValueTrait,
 >() -> String {
     format!(
-        "proto_version '4', binary '{}', messages: '{}', streaming: '{}', two_phase: '{}', origin: '{}'",
+        "proto_version '4', binary '{}', messages '{}', streaming '{}', two_phase '{}', origin '{}'",
         Binary::to_str(),
         <Messages as MessagesValueTrait>::to_str(),
         Streaming::to_str(),
