@@ -83,7 +83,7 @@ pub fn parse_old_data_or_primary_key<Binary: PGValue + std::fmt::Debug>(
     match c {
         b'K' => {
             let (tuple_data, read_bytes) =
-                parse_tuple_data::<Binary>(&buffer[0..1]);
+                parse_tuple_data::<Binary>(&buffer[1..]);
             return Some((
                 OldDataOrPrimaryKeyTupleData::<Binary>::PrimaryKeyTupleData(
                     tuple_data,
@@ -93,7 +93,7 @@ pub fn parse_old_data_or_primary_key<Binary: PGValue + std::fmt::Debug>(
         }
         b'O' => {
             let (tuple_data, read_bytes) =
-                parse_tuple_data::<Binary>(&buffer[0..1]);
+                parse_tuple_data::<Binary>(&buffer[1..]);
             return Some((
                 OldDataOrPrimaryKeyTupleData::<Binary>::OldTupleData(
                     tuple_data,
